@@ -1,48 +1,40 @@
-# my-search
+# my-search · 聚合搜索
 
-This template should help get you started developing with Vue 3 in Vite.
+选类型 → 选引擎 → 输关键词，一次打开多个搜索引擎的结果页。
 
-## Recommended IDE Setup
+在线访问：<https://yellowchives.github.io/my-search/>
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 功能
 
-## Recommended Browser Setup
+- 三区块界面：搜索类型（通用 / 图片 / 视频 / 地图 / 购物 / 图书）→ 搜索引擎卡片（自动换行、默认全选、部分引擎带高级选项）→ 关键词输入
+- 同一网站在不同分类下直达各自的垂直结果页（如百度图片、百度视频、搜狗微信）
+- 引擎与分类完全由配置文件驱动，加站点不用改组件
+- 勾选状态按引擎记忆在 localStorage，切分类不丢失
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+## 配置搜索引擎
 
-## Type Support for `.vue` Imports in TS
+```
+src/config/
+├─ engines.ts          # 类型定义 + 分类清单 + 汇总入口
+└─ categories/
+   ├─ general.ts       # 每个分类一个文件
+   ├─ image.ts
+   ├─ video.ts
+   ├─ map.ts
+   ├─ shopping.ts
+   └─ book.ts
+```
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+新增引擎：在对应分类文件里加一条 `{ id, name, urlTemplate, options }`，`urlTemplate` 中的 `{query}` 是关键词占位符；`options` 为空数组表示无额外选项，否则渲染为卡片上的下拉条件。
 
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
+## 本地开发
 
 ```sh
 npm install
+npm run dev      # 本地预览
+npm run build    # 类型检查 + 生产构建
 ```
 
-### Compile and Hot-Reload for Development
+## 部署
 
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+推送到 `main` 后，`.github/workflows/deploy.yml` 会自动构建并通过 GitHub Actions 部署到 GitHub Pages。首次部署前需在本仓库 Settings → Pages 把 Source 设为 **GitHub Actions**。
